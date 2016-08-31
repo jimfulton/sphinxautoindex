@@ -64,15 +64,13 @@ def interface_getattr(*v):
         # Interface objects do not list their members through
         # __dict__.
         return dict((n,obj.get(n)) for n in obj.names())
-    try:
-        return getattr(obj, name)
-    except AttributeError:
-        if name in obj.names(all=True):
-            return obj.get(name)
-        elif 2 < len(v):
-            return v[2]
-        else:
-            raise
+
+    if name in obj.names(all=True):
+        return obj.get(name)
+    elif 2 < len(v):
+        return v[2]
+    else:
+        raise
 
 def interface_format_args(obj):
     r"""Return the signature of an interface method or of an
@@ -116,7 +114,7 @@ class InterfaceDocumenter(sphinx.ext.autodoc.ClassDocumenter):
         members given by *self.options.members* (which may also be none).
         """
         obj = self.object
-        names = obj.names(want_all)
+        names = sorted(obj.names(want_all))
         return False, [(_name, obj.get(_name)) for _name in names]
 
 class InterfaceAttributeDocumenter(sphinx.ext.autodoc.AttributeDocumenter):
