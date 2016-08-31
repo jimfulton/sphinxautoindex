@@ -65,6 +65,9 @@ def interface_getattr(*v):
         # __dict__.
         return dict((n,obj.get(n)) for n in obj.names())
 
+    if "__doc__" == name:
+        return obj.__doc__
+
     if name in obj.names(all=True):
         return obj.get(name)
     elif 2 < len(v):
