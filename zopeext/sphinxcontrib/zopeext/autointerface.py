@@ -118,6 +118,12 @@ class InterfaceDocumenter(sphinx.ext.autodoc.ClassDocumenter):
         """
         obj = self.object
         names = sorted(obj.names(want_all))
+        try:
+            members = set(self.options.get('members'))
+        except TypeError:
+            pass # is members wasn't supplied or was empty, just return all
+        else:
+            names = [name for name in names if name in members]
         return False, [(_name, obj.get(_name)) for _name in names]
 
 class InterfaceAttributeDocumenter(sphinx.ext.autodoc.AttributeDocumenter):
